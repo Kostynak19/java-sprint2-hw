@@ -44,7 +44,7 @@ public class MonthlyReport implements IReport {
     }
 
     private void separatedReport(String report) {
-        String[] lines = report.split("\r\\n");
+        String[] lines = report.split("\\n");
         for (int i = 1; i < lines.length; i++) {
             String[] lineContent = lines[i].split(",");
             itemName.add(i - 1, lineContent[0]);
@@ -129,7 +129,7 @@ public class MonthlyReport implements IReport {
         }
     }
 
-     @Override
+      @Override
     public void printReport() {
         if (!listReport.isEmpty()) {
             listReport.forEach(System.out::print);

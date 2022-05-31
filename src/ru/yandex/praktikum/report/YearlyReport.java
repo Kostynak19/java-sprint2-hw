@@ -16,8 +16,8 @@ public class YearlyReport implements IReport {
     private final List<String> amount;
     private final List<String> isExpense;
     private String year;
-    private String nameMonth;
-    private int count;
+    private String nameMonth = "";
+    private int count = 0;
 
     public YearlyReport() {
         this.month = new ArrayList<>();
@@ -39,7 +39,7 @@ public class YearlyReport implements IReport {
     }
 
     private void separatedReport(String report) {
-        String[] lines = report.split("\r\\n");
+        String[] lines = report.split("\\n");
         for (int i = 1; i < lines.length; i++) {
             String[] lineContent = lines[i].split(",");
             month.add(i - 1, lineContent[0]);
