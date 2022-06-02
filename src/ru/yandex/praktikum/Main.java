@@ -50,63 +50,7 @@ public class Main {
                     }
                     break;
                 case 3:
-                    Map<Month, List<Integer>> map = monthlyReport.getMap();
-                    int index = 0;
-                    if (monthlyReport.getCount() != 0 && yearlyReport.getCount() != 0) {
-                        for (Map.Entry<Month, List<Integer>> pair : map.entrySet()) {
-                            List<String> listMonth = yearlyReport.getMonth();
-                            for (int i = 0; i < listMonth.size(); i++) {
-                                if (i < 2) {
-                                    List<Integer> list = map.get(pair.getKey());
-                                    int resultY, resultM;
-                                    boolean isFlag = yearlyReport.isExpenses(index);
-                                    if (listMonth.size() % 2 != 0) {
-                                        if (index < listMonth.size() - 1) {
-                                            boolean isEqualMonth = listMonth.get(index).equals(listMonth.get(index + 1));
-                                            resultY = !isFlag ? yearlyReport.expensesProfit(index)
-                                                    : yearlyReport.expensesLoss(index);
-                                            resultM = !isFlag ? list.get(0) : list.get(1);
-                                            if (isEqualMonth) {
-                                                assertData(resultY, resultM, pair);
-                                                index++;
-                                            } else {
-                                                index++;
-                                                assertData(resultY, resultM, pair);
-                                                if (i % 2 == 0) {
-                                                    resultY = 0;
-                                                    resultM = isFlag ? list.get(0) : list.get(1);
-                                                    i++;
-                                                    assertData(resultY, resultM, pair);
-                                                }
-                                            }
-                                        } else {
-                                            resultY = !isFlag ? yearlyReport.expensesProfit(index)
-                                                    : yearlyReport.expensesLoss(index);
-                                            resultM = !isFlag ? list.get(0) : list.get(1);
-                                            assertData(resultY, resultM, pair);
-                                            if (i % 2 == 0) {
-                                                resultY = 0;
-                                                resultM = isFlag ? list.get(0) : list.get(1);
-                                                i++;
-                                                assertData(resultY, resultM, pair);
-                                            }
-                                        }
-                                    } else {
-                                        resultY = !isFlag ? yearlyReport.expensesProfit(index)
-                                                : yearlyReport.expensesLoss(index);
-                                        resultM = !isFlag ? list.get(0) : list.get(1);
-                                        assertData(resultY, resultM, pair);
-                                        index++;
-                                    }
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        System.err.printf("Сначала вызовите команды:%n[1] - Считать все месячные отчеты%n"
-                                + "[2] - Считать годовой отчет%n");
-                    }
+                    yearlyReport.dataReconciliation(monthlyReport);
                     break;
                 case 4:
                     monthlyReport.printReport();
@@ -126,13 +70,5 @@ public class Main {
         System.out.println("[3] - Сверить отчеты");
         System.out.println("[4] - Вывести на экран все месячные отчеты");
         System.out.println("[5] - Вывести на экран годовой отчет");
-    }
-
-    public static void assertData(int resultY, int resultM, Map.Entry<Month, List<Integer>> pair) {
-        if (resultY == resultM) {
-            System.out.printf("%s: Сверка данных выполнена!%n", pair.getKey());
-        } else {
-            System.err.printf("%s: %d != %d%n", pair.getKey(), resultY, resultM);
-        }
     }
 }

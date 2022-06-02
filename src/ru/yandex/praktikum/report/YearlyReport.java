@@ -2,12 +2,15 @@ package ru.yandex.praktikum.report;
 
 
 import lombok.Getter;
+import ru.yandex.praktikum.month.Month;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class YearlyReport implements IReport {
@@ -153,5 +156,74 @@ public class YearlyReport implements IReport {
                 averageExpensesLoss());
 
         listReport.add(result);
+    }
+
+    public void dataReconciliation(MonthlyReport monthlyReport) {
+        Map<Month, List<Integer>> map = monthlyReport.getMap();
+        int index = 0;
+        if (monthlyReport.getCount() != 0 && getCount() != 0) {
+            for (Map.Entry<Month, List<Integer>> pair : map.entrySet()) {
+                List<String> listMonth = getMonth();
+                for (int i = 0; i < listMonth.size(); i++) {
+                    if (i < 2) {
+                        List<Integer> list = map.get(pair.getKey());
+                        int resultY, resultM;
+                        boolean isFlag = isExpenses(index);
+                        if (listMonth.size() % 2 != 0) {
+                            if (index < listMonth.size() - 1) {
+                                boolean isEqualMonth = listMonth.get(index).equals(listMonth.get(index + 1));
+                                resultY = !isFlag ? expensesProfit(index)
+                                        : expensesLoss(index);
+                                resultM = !isFlag ? list.get(0) : list.get(1);
+                                if (isEqualMonth) {
+                                    assertData(resultY, resultM, pair);
+                                    index++;
+                                } else {
+                                    index++;
+                                    assertData(resultY, resultM, pair);
+                                    if (i % 2 == 0) {
+                                        resultY = 0;
+                                        resultM = isFlag ? list.get(0) : list.get(1);
+                                        i++;
+                                        assertData(resultY, resultM, pair);
+                                    }
+                                }
+                            } else {
+                                resultY = !isFlag ? expensesProfit(index)
+                                        : expensesLoss(index);
+                                resultM = !isFlag ? list.get(0) : list.get(1);
+                                assertData(resultY, resultM, pair);
+                                if (i % 2 == 0) {
+                                    resultY = 0;
+                                    resultM = isFlag ? list.get(0) : list.get(1);
+                                    i++;
+                                    assertData(resultY, resultM, pair);
+                                }
+                            }
+                        } else {
+                            resultY = !isFlag ? expensesProfit(index)
+                                    : expensesLoss(index);
+                            resultM = !isFlag ? list.get(0) : list.get(1);
+                            assertData(resultY, resultM, pair);
+                            index++;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        } else {
+            System.err.printf("Сначала вызовите команды:%n[1] - Считать все месячные отчеты%n"
+                    + "[2] - Считать годовой отчет%n");
+        }
+
+    }
+
+    public static void assertData(int resultY, int resultM, Map.Entry<Month, List<Integer>> pair) {
+        if (resultY == resultM) {
+            System.out.printf("%s: Сверка данных выполнена!%n", pair.getKey());
+        } else {
+            System.err.printf("%s: %d != %d%n", pair.getKey(), resultY, resultM);
+        }
     }
 }

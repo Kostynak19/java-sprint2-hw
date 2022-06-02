@@ -129,7 +129,7 @@ public class MonthlyReport implements IReport {
         }
     }
 
-      @Override
+    @Override
     public void printReport() {
         if (!listReport.isEmpty()) {
             listReport.forEach(System.out::print);
